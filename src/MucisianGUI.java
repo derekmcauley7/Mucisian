@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -101,10 +102,7 @@ public class MucisianGUI extends JFrame {
 					
 					
 				} // end of for loop
-				
-				
-				
-				
+					
 			}
 
 		} catch (IOException e) {
@@ -161,7 +159,11 @@ public class MucisianGUI extends JFrame {
 		        JTextField field2 = new JTextField("");
 		        JTextField field3 = new JTextField("");
 		        JTextField field4 = new JTextField("");
+		        JTextPane pane = new JTextPane();
+		        pane.setText("Please enter the details of the Mucisian you want to add. \n"
+		        		+ "You must fill in all fields");
 		        JPanel panel = new JPanel(new GridLayout(0, 1));
+		        panel.add(pane);
 		        panel.add(new JLabel("Name:"));
 		        panel.add(field1);
 		        panel.add(new JLabel("Instrument:"));
@@ -174,7 +176,10 @@ public class MucisianGUI extends JFrame {
 				int result = JOptionPane.showConfirmDialog(null, panel, "Add a Mucisian",
 			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 			        if (result == JOptionPane.OK_OPTION) {
-			        	
+			        	if(field1.getText().equals("") || field2.getText().equals("") || field3.getText().equals("") || field4.getText().equals("") ){
+			        		JOptionPane.showMessageDialog(getComponent(0), "You must fill in all fields");	
+			        	}
+			        	else{
 			        	BufferedWriter bw = null;
 						try {
 							bw = new BufferedWriter(new FileWriter("C:\\Users\\derek\\workspace42\\Mucisian\\img\\" + textFile +".txt", true));
@@ -192,12 +197,14 @@ public class MucisianGUI extends JFrame {
 						            bw.close();
 						            subPanel.removeAll();
 						            LoadGUI();
-						            
+						            setSize(1201, 701);
+						        
 						        } catch (IOException ioe2) {
 						            // just ignore it
 						        }
 						    }
 						}
+			        	}
 			            
 			            
 			        } else {
@@ -211,9 +218,86 @@ public class MucisianGUI extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+			
 				
+		        JTextField field1 = new JTextField("");
+		        JTextField field2 = new JTextField("");
+		        JTextField field3 = new JTextField("");
+		        JTextField field4 = new JTextField("");
+		        JTextPane pane = new JTextPane();
+		        pane.setText("Enter the details of the mucisian you want to remove.");
+		        JPanel panel = new JPanel(new GridLayout(0, 1));
+		        panel.add(pane);
+		        panel.add(new JLabel("Name:"));
+		        panel.add(field1);
+		        panel.add(new JLabel("Instrument:"));
+		        panel.add(field2);
+		        panel.add(new JLabel("Solo or Band?"));
+		        panel.add(field4);
+		        panel.add(new JLabel("Type of Band ?"));
+		        panel.add(field3);
+		        
+				int result = JOptionPane.showConfirmDialog(null, panel, "Remove Mucisian",
+			            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+			        if (result == JOptionPane.OK_OPTION) {
+			        	
+						try {
+						
+							File inputFile = new File("C:\\Users\\derek\\workspace42\\Mucisian\\img\\" + textFile +".txt");
+							File tempFile = new File("C:\\Users\\derek\\workspace42\\Mucisian\\img\\myTempFile.txt");
+
+							BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+							BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+							String lineToRemove = field1.getText() + " " + field2.getText() +" " + field3.getText() +" " + field4.getText() ;
+							String currentLine;
+
+							while((currentLine = reader.readLine()) != null) {
+							    // trim newline when comparing with lineToRemove
+							    String trimmedLine = currentLine.trim();
+							    if(trimmedLine.equals(lineToRemove)) continue;
+							    writer.write(currentLine + System.getProperty("line.separator"));
+							    
+							}
+							
+							writer.close(); 
+							reader.close(); 
+							inputFile.delete();
+							tempFile.renameTo(inputFile);
+							
+						    
+						}
+						    catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						finally { // always close the file
+						   
+									subPanel.removeAll();
+						            LoadGUI();
+						            setSize(1201, 701);
+						            setSize(1200, 701);
+						      
+						    
+						}
+			            
+			            
+			        } else {
+			            System.out.println("Cancelled");
+			        }
 				
 			}});
 
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }
